@@ -92,21 +92,27 @@ def message(payload):
             print(f"Got an error: {e.response['error']}")
 
     try:
-        file_name = payload['event']['files'][0]['name']
-        print("file_name:-->", file_name)
-        file_url = payload['event']['files'][0]['url_private']
-        print("file_url:-->", file_url)
-        user_n = payload['event']['files'][0]['user']
-        print("user_n:-->", user_n)
-        file_name = file_url.split('/')[-1]
-        print("file_name:-->", file_name)
-        try:
-            json_path = requests.get(file_url)
-        except:
-            print("nnnn mm ")
-        if user_n != BOT_ID:
-            with open(file_name, "wb") as f:
-                f.write(json_path.content)
+        for i in range(len(payload['event']['files'])):
+            file_name = payload['event']['files'][i]['name']
+            print("file_name:-->", file_name)
+            print("length:-->", len(payload['event']['files']))
+            file_url = payload['event']['files'][i]['url_private']
+            print("file_url:-->", file_url)
+            file_path = os.path.join("./files/", payload['event']['files'][i]['mimetype'].split('/')[0])
+            print("file_path:-->", file_path)
+            user_n = payload['event']['files'][i]['user']
+            print("user_n:-->", user_n)
+            file_name = file_url.split('/')[-1]
+            print("file_name:-->", file_name)
+            try:
+                json_path = requests.get(file_url)
+            except:
+                print("nnnn mm ")
+            if user_n != BOT_ID:
+                if os.path.exists(file_path)!=True:
+                    os.mkdir(file_path)
+                with open(os.path.join(file_path, file_name), "wb") as f:
+                    f.write(json_path.content)
     except:
         print("not found 1-->>")
 

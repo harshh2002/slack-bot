@@ -3,3 +3,6 @@
 files/.DS_Store
 files/image/.DS_Store
 files/video/.DS_Store
+files/*
+!files/image/hola.webp
+!files/video/anya.mp4
