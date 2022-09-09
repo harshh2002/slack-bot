@@ -22,8 +22,6 @@ def message(payload):
     text = event.get('text')
  
     if text == "hi":
-        client.chat_postMessage(channel=channel_id,text="Hello")
-    if text == "image":
         try:
             response = client.files_upload(
                 file='./files/image/hola.webp',
@@ -48,5 +46,49 @@ def message(payload):
             # str like 'invalid_auth', 'channel_not_found'
             assert e.response["error"]
             print(f"Got an error: {e.response['error']}")
+
+    def generate_buttons(files): 
+        buttons = []
+        for i in range(len(files)):
+            buttons.append({
+                "text": {
+                    "type": "plain_text",
+                    "text": files[i],
+                    "emoji": True
+                },
+                "value": f"value-{i}"
+            })
+        return buttons
+
+    if text == "image":
+        dir_path = r'./files/image'
+        files = os.listdir(dir_path)
+        option_list = generate_buttons(files)
+        message_to_send = {"channel" : channel_id, "blocks": [
+        {
+            "type": "input",
+            "element": {
+                "type": "radio_buttons",
+                "options": option_list,
+                "action_id": "radio_buttons-action"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Images",
+                "emoji": True
+            }
+        }
+        ]
+        }
+        try: 
+            return client.chat_postMessage(**message_to_send)
+        except SlackApiError as e:
+            # You will get a SlackApiError if "ok" is False
+            assert e.response["ok"] is False
+            # str like 'invalid_auth', 'channel_not_found'
+            assert e.response["error"]
+            print(f"Got an error: {e.response['error']}")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
