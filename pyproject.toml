@@ -21,6 +21,7 @@ slackclient = "^2.9.4"
 yarl = "^1.8.1"
 Flask = "^2.2.2"
 slackeventsapi = "^3.0.1"
+requests = "^2.28.1"
 
 
 [build-system]

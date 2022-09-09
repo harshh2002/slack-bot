@@ -3,11 +3,13 @@ from flask import Flask
 from slackeventsapi import SlackEventAdapter
 from slack.errors import SlackApiError
 import os
+import requests
 from dotenv import load_dotenv
 load_dotenv()
 
 SLACK_TOKEN=os.getenv("SLACK_TOKEN")
 SIGNING_SECRET=os.getenv("SIGNING_SECRET")
+BOT_ID = os.getenv("BOT_ID")
 
 app = Flask(__name__)
 slack_event_adapter = SlackEventAdapter(SIGNING_SECRET, "/slack/events", app)
@@ -89,6 +91,24 @@ def message(payload):
             assert e.response["error"]
             print(f"Got an error: {e.response['error']}")
 
+    try:
+        file_name = payload['event']['files'][0]['name']
+        print("file_name:-->", file_name)
+        file_url = payload['event']['files'][0]['url_private']
+        print("file_url:-->", file_url)
+        user_n = payload['event']['files'][0]['user']
+        print("user_n:-->", user_n)
+        file_name = file_url.split('/')[-1]
+        print("file_name:-->", file_name)
+        try:
+            json_path = requests.get(file_url)
+        except:
+            print("nnnn mm ")
+        if user_n != BOT_ID:
+            with open(file_name, "wb") as f:
+                f.write(json_path.content)
+    except:
+        print("not found 1-->>")
 
 if __name__ == "__main__":
     app.run(debug=True)
