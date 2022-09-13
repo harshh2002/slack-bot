@@ -13,4 +13,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
-        script: cd ~/app && git pull -f && docker-compose up --build -d
+        script: cd ~/app/slack-bot && git pull -f && docker-compose up --build -d
