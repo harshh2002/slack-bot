@@ -5,6 +5,7 @@ from slack.errors import SlackApiError
 import os
 import requests
 from dotenv import load_dotenv
+from waitress import serve
 load_dotenv()
 
 SLACK_TOKEN=os.getenv("SLACK_TOKEN")
@@ -117,4 +118,4 @@ def message(payload):
         print("not found 1-->>")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5000)
