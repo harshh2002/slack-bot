@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Harsh Pratap Singh <harsh@Harshs-MacBook-Pro.local>"]
 readme = "README.md"
-packages = [{include = "slack_bot"}]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.10"
