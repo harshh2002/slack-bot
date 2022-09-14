@@ -13,6 +13,11 @@ SIGNING_SECRET=os.getenv("SIGNING_SECRET")
 BOT_ID = os.getenv("BOT_ID")
 
 app = Flask(__name__)
+
+@app.route('/health')
+def health():
+    return "OK"
+
 slack_event_adapter = SlackEventAdapter(SIGNING_SECRET, "/slack/events", app)
 
 client = slack.WebClient(token=SLACK_TOKEN)
