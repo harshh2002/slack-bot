@@ -42,6 +42,7 @@ def message(payload):
             # str like 'invalid_auth', 'channel_not_found'
             assert e.response["error"]
             print(f"Got an error: {e.response['error']}")
+    
     if text == "video":
         try:
             response = client.files_upload(
