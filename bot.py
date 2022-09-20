@@ -1,7 +1,6 @@
 import slack
 from flask import Flask
 from slackeventsapi import SlackEventAdapter
-from slack.errors import SlackApiError
 import modules.functions as func
 # from slack_bolt import App
 import os
@@ -38,28 +37,15 @@ def message(payload):
     text = event.get('text')
  
     if text == "hi":
-        func.hi()
+        func.hi(client, channel_id)
     
     if text == "video":
-        func.video()
-
-    def generate_buttons(files): 
-        buttons = []
-        for i in range(len(files)):
-            buttons.append({
-                "text": {
-                    "type": "plain_text",
-                    "text": files[i],
-                    "emoji": True
-                },
-                "value": f"value-{i}"
-            })
-        return buttons
+        func.video(client, channel_id)
 
     if text == "image":
         dir_path = r'./files/image'
         files = os.listdir(dir_path)
-        option_list = generate_buttons(files)
+        option_list = func.generate_buttons(files)
         message_to_send = {"channel" : channel_id, "blocks": [
         {
             "type": "input",
@@ -78,12 +64,8 @@ def message(payload):
         }
         try: 
             return client.chat_postMessage(**message_to_send)
-        except SlackApiError as e:
-            # You will get a SlackApiError if "ok" is False
-            assert e.response["ok"] is False
-            # str like 'invalid_auth', 'channel_not_found'
-            assert e.response["error"]
-            print(f"Got an error: {e.response['error']}")
+        except:
+            func.err()
 
     try:
         for i in range(len(payload['event']['files'])):
