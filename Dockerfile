@@ -1,3 +1,4 @@
+# Builder image
 FROM python:3-alpine as builder
 RUN apk add --no-cache \
     ca-certificates \
@@ -14,8 +15,9 @@ WORKDIR /builder
 COPY pyproject.toml poetry.lock ./
 RUN python -m venv /opt/venv && \
     . /opt/venv/bin/activate && \ 
-    poetry install --no-dev --no-interaction
+    poetry install --no-interaction
 
+# Final image
 FROM python:3-alpine as runner
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
