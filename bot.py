@@ -2,11 +2,14 @@ import slack
 from flask import Flask
 from slackeventsapi import SlackEventAdapter
 from slack.errors import SlackApiError
+# from slack_bolt import App
 import os
 import requests
 from dotenv import load_dotenv
 from waitress import serve
 load_dotenv()
+
+# app = App()
 
 SLACK_TOKEN=os.getenv("SLACK_TOKEN")
 SIGNING_SECRET=os.getenv("SIGNING_SECRET")
@@ -17,6 +20,10 @@ app = Flask(__name__)
 @app.route('/health')
 def health():
     return "OK"
+
+# @app.command('/slash/', methods=['GET'])
+# def slash():
+#     return "OK"
 
 slack_event_adapter = SlackEventAdapter(SIGNING_SECRET, "/slack/events", app)
 
@@ -114,7 +121,7 @@ def message(payload):
             try:
                 json_path = requests.get(file_url)
             except:
-                print("nnnn mm ")
+                print("nnnn mm")
             if user_n != BOT_ID:
                 if os.path.exists(file_path)!=True:
                     os.mkdir(file_path)

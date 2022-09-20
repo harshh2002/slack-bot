@@ -1,10 +1,25 @@
-FROM python:3.10
-RUN apt update -y
+FROM python:3-alpine as builder
+RUN apk add --no-cache \
+    ca-certificates \
+    ffmpeg \
+    openssl \
+    aria2 \
+    g++ \
+    git \
+    py3-cffi \
+    libffi-dev \
+    zlib-dev
 RUN pip install poetry
-# RUN curl -sSL https://install.python-poetry.org | python3 -
-WORKDIR /app
+WORKDIR /builder
 COPY pyproject.toml poetry.lock ./
-RUN poetry install
+RUN python -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \ 
+    poetry install --no-dev --no-interaction
+
+FROM python:3-alpine as runner
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+WORKDIR /bot
 COPY . .
 EXPOSE 5000
 CMD ["poetry", "run", "python3", "bot.py"]
