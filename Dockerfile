@@ -22,4 +22,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /bot
 COPY . .
 EXPOSE 5000
-CMD ["poetry", "run", "python3", "bot.py"]
+CMD ["python3", "bot.py"]
